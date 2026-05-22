@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Customs Shipment Automation Tool — clean and format MID codes, HS codes, and manifested descriptions from CSV/Excel exports." />
+  <meta name="api-base" content="/" />
+  <title>Customs MID Automation | Shipment Report Cleaner</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%236366f1'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='22' fill='white'%3EMID%3C/text%3E%3C/svg%3E" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/static/css/style.css?v=206" />
+</head>
+<body>
+
+  <!-- ── Splash Screen ──────────────────────────────────────────── -->
+  <div class="splash" id="splash">
+    <div class="splash-inner">
+      <div class="splash-logo" aria-hidden="true">
+        <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+          <rect x="4" y="4" width="18" height="18" rx="4" fill="url(#sg1)"/>
+          <rect x="30" y="4" width="18" height="18" rx="4" fill="url(#sg2)" opacity=".7"/>
+          <rect x="4" y="30" width="18" height="18" rx="4" fill="url(#sg2)" opacity=".7"/>
+          <rect x="30" y="30" width="18" height="18" rx="4" fill="url(#sg1)"/>
+          <defs>
+            <linearGradient id="sg1" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#6366f1"/>
+              <stop offset="1" stop-color="#8b5cf6"/>
+            </linearGradient>
+            <linearGradient id="sg2" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#06b6d4"/>
+              <stop offset="1" stop-color="#6366f1"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h1 class="splash-title gradient-text">Customs<span class="splash-accent">MID</span></h1>
+      <p class="splash-sub">Shipment Report Automation</p>
+      <div class="splash-loader" aria-hidden="true">
+        <div class="splash-bar"></div>
+      </div>
+      <p class="splash-credit">Design by Imran Ahmed</p>
+    </div>
+  </div>
+
+  <!-- ── Background Orbs ─────────────────────────────────────────── -->
+  <div class="bg-orb orb-1" aria-hidden="true"></div>
+  <div class="bg-orb orb-2" aria-hidden="true"></div>
+  <div class="bg-orb orb-3" aria-hidden="true"></div>
+
+  <!-- ── Header ─────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <div class="logo-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect x="2" y="2" width="10" height="10" rx="2" fill="url(#g1)"/>
+            <rect x="16" y="2" width="10" height="10" rx="2" fill="url(#g2)" opacity=".7"/>
+            <rect x="2" y="16" width="10" height="10" rx="2" fill="url(#g2)" opacity=".7"/>
+            <rect x="16" y="16" width="10" height="10" rx="2" fill="url(#g1)"/>
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#8b5cf6"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#06b6d4"/>
+                <stop offset="1" stop-color="#6366f1"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="logo-text">Customs<span class="accent">MID</span></span>
+      </div>
+      <nav class="header-nav" aria-label="Site navigation">
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#upload-section" class="nav-link btn-nav">Get Started</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Hero ───────────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container hero-inner">
+      <div class="badge-pill">
+        <span class="badge-dot" aria-hidden="true"></span>
+        Shipment Report Automation
+      </div>
+      <h1 id="hero-heading" class="hero-title">
+        Clean Customs Data<br/>
+        <span class="gradient-text">In Seconds</span>
+      </h1>
+      <p class="hero-subtitle">
+        Upload your FedEx DRE or customs shipment CSV/Excel report.
+        Our engine automatically cleans MID codes, extracts HS codes,
+        and formats every row — then exports a clean Excel file ready
+        to submit.
+      </p>
+      <div class="hero-cta">
+        <a href="#upload-section" class="btn btn-primary" id="hero-start-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Upload &amp; Process
+        </a>
+        <a href="#how-it-works" class="btn btn-ghost">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stats Bar ──────────────────────────────────────────────── -->
+  <div class="stats-bar" aria-label="Key features">
+    <div class="container stats-inner">
+      <div class="stat-item">
+        <span class="stat-icon" aria-hidden="true">🧹</span>
+        <span class="stat-label">Auto MID Cleaning</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-icon" aria-hidden="true">🔍</span>
+        <span class="stat-label">HS Code Recovery</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-icon" aria-hidden="true">📊</span>
+        <span class="stat-label">Excel Export</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-icon" aria-hidden="true">⚡</span>
+        <span class="stat-label">Instant Processing</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── How It Works ───────────────────────────────────────────── -->
+  <section class="how-section" id="how-it-works" aria-labelledby="how-heading">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="how-heading" class="section-title">How It Works</h2>
+        <p class="section-subtitle">Six intelligent processing steps run automatically on every upload.</p>
+      </div>
+      <div class="steps-grid">
+
+        <div class="step-card" style="--delay:0ms">
+          <div class="step-number" aria-hidden="true">01</div>
+          <div class="step-icon" aria-hidden="true">🗑️</div>
+          <h3 class="step-title">Remove Invalid Rows</h3>
+          <p class="step-desc">Any row with a blank <em>CE Commodity Description</em> is automatically removed before processing begins.</p>
+        </div>
+
+        <div class="step-card" style="--delay:80ms">
+          <div class="step-number" aria-hidden="true">02</div>
+          <div class="step-icon" aria-hidden="true">✂️</div>
+          <h3 class="step-title">Split Description</h3>
+          <p class="step-desc">Manifested Description is split on <code>/</code> into three parts: MID Code, HS Code, and Product Description.</p>
+        </div>
+
+        <div class="step-card" style="--delay:160ms">
+          <div class="step-number" aria-hidden="true">03</div>
+          <div class="step-icon" aria-hidden="true">🧬</div>
+          <h3 class="step-title">Clean MID Codes</h3>
+          <p class="step-desc">Embedded numbers are stripped intelligently. <code>PKUMANAESIA51310</code> becomes <code>PKUMANAESIA</code>.</p>
+        </div>
+
+        <div class="step-card" style="--delay:240ms">
+          <div class="step-number" aria-hidden="true">04</div>
+          <div class="step-icon" aria-hidden="true">🔄</div>
+          <h3 class="step-title">Recover HS Codes</h3>
+          <p class="step-desc">Missing HS codes are automatically recovered from the <em>CE Item HSCode</em> column as a fallback.</p>
+        </div>
+
+        <div class="step-card" style="--delay:320ms">
+          <div class="step-number" aria-hidden="true">05</div>
+          <div class="step-icon" aria-hidden="true">✨</div>
+          <h3 class="step-title">Format Output</h3>
+          <p class="step-desc">Final format is always <code>MIDCODE/HSCODE/DESCRIPTION</code> — no extra spaces, no duplicate slashes.</p>
+        </div>
+
+        <div class="step-card" style="--delay:400ms">
+          <div class="step-number" aria-hidden="true">06</div>
+          <div class="step-icon" aria-hidden="true">💾</div>
+          <h3 class="step-title">Excel Export</h3>
+          <p class="step-desc">The cleaned file is exported as a formatted <code>.xlsx</code> with all original columns preserved.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Upload Section ─────────────────────────────────────────── -->
+  <section class="upload-section" id="upload-section" aria-labelledby="upload-heading">
+    <div class="container upload-container">
+
+      <div class="section-header">
+        <h2 id="upload-heading" class="section-title">Process Your File</h2>
+        <p class="section-subtitle">Drag &amp; drop your CSV or Excel export below, or click to browse.</p>
+      </div>
+
+      <!-- Country Selection -->
+      <div class="country-select-wrapper">
+        <label for="country-select" class="country-label">Target Country:</label>
+        <select id="country-select" class="country-select">
+          <option value="US" selected>US - United States</option>
+          <option value="ALL">All Countries (No Filter)</option>
+          <option value="CA">CA - Canada</option>
+          <option value="GB">GB - United Kingdom</option>
+          <option value="DE">DE - Germany</option>
+          <option value="FR">FR - France</option>
+          <option value="AU">AU - Australia</option>
+        </select>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="drop-zone" role="button" tabindex="0"
+           aria-label="File upload area — drag and drop or click to browse">
+        <div class="drop-zone-inner">
+          <div class="drop-icon" id="drop-icon" aria-hidden="true">
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+              <circle cx="26" cy="26" r="26" fill="url(#dg)"/>
+              <path d="M26 34V18M18 26l8-8 8 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="dg" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#6366f1"/>
+                  <stop offset="1" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <p class="drop-title" id="drop-title">Drop your file here</p>
+          <p class="drop-sub">or <span class="drop-link">browse to upload</span></p>
+          <p class="drop-hint">Supports CSV, XLSX, XLS &nbsp;·&nbsp; Max 16 MB</p>
+        </div>
+        <input type="file" id="file-input" name="file"
+               accept=".csv,.xlsx,.xls" class="visually-hidden"
+               aria-label="Choose file to upload" />
+      </div>
+
+      <!-- File Preview Card -->
+      <div class="file-preview" id="file-preview" aria-live="polite" hidden>
+        <div class="file-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="url(#fg)"/>
+            <path d="M10 9h8l4 4v10a1 1 0 01-1 1H10a1 1 0 01-1-1V10a1 1 0 011-1z" fill="white" opacity=".9"/>
+            <path d="M18 9v5h4" fill="none" stroke="white" stroke-width="1.5"/>
+            <defs>
+              <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#10b981"/>
+                <stop offset="1" stop-color="#059669"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="file-info">
+          <p class="file-name" id="file-name">—</p>
+          <p class="file-size" id="file-size">—</p>
+        </div>
+        <button class="file-remove" id="file-remove" type="button" aria-label="Remove file">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Process/Analyze Button -->
+      <button class="btn btn-primary btn-process" id="process-btn" disabled
+              aria-describedby="process-status">
+        <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        <span id="btn-label">Analyze File</span>
+      </button>
+
+    </div> <!-- End upload-container -->
+
+    <div class="container-wide">
+      <!-- Preview Card -->
+      <div class="preview-card" id="preview-card" hidden>
+        <h3 class="preview-title">Live Preview (<span id="preview-country-label"></span>)</h3>
+        <div class="preview-stats">
+          <div class="preview-stat-item" data-type="all" tabindex="0" role="button">
+            <span class="preview-stat-label">
+              <span style="display:inline-block;background:#3b82f6;color:white;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;">🔍</span>
+              Total Shipments
+            </span>
+            <span class="preview-stat-value" id="preview-total">0</span>
+          </div>
+          <!-- Note: 'Valid MID' tab is set as default active in JS -->
+          <div class="preview-stat-item invalid" data-type="invalid" tabindex="0" role="button">
+            <span class="preview-stat-label">
+              <span style="display:inline-block;background:#ef4444;color:white;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;">⚠️</span>
+              Missing MID
+            </span>
+            <span class="preview-stat-value" id="preview-invalid">0</span>
+          </div>
+          <div class="preview-stat-item valid active" data-type="valid" tabindex="0" role="button">
+            <span class="preview-stat-label">
+              <span style="display:inline-block;background:#10b981;color:white;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;">✓</span>
+              Valid MID
+            </span>
+            <span class="preview-stat-value" id="preview-valid">0</span>
+          </div>
+
+          <!-- Added: Spaces Found stat (placeholder for future logic) -->
+          <div class="preview-stat-item" data-type="spaces" tabindex="0" role="button">
+            <span class="preview-stat-label">
+              <span style="display:inline-block;background:#8b5cf6;color:white;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;">␣</span>
+              Spaces Found
+            </span>
+            <span class="preview-stat-value" id="preview-spaces">0</span>
+          </div>
+          <div class="preview-stat-item" data-type="modified" tabindex="0" role="button">
+            <span class="preview-stat-label">
+              <span style="display:inline-block;background:#0891b2;color:white;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;">✏️</span>
+              MID Words
+            </span>
+            <span class="preview-stat-value" id="preview-modified">0</span>
+          </div>
+          <div class="preview-stat-item envelope" data-type="envelope" tabindex="0" role="button">
+            <span class="preview-stat-label">
+              <span style="display:inline-block;background:#f59e0b;color:white;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;">✉️</span>
+              Envelopes Excluded
+            </span>
+            <span class="preview-stat-value" id="preview-envelope">0</span>
+          </div>
+        </div>
+
+        <div class="preview-table-container">
+          <h4 class="preview-table-title">Sample Data (First 10 Rows)</h4>
+          <div class="table-responsive">
+            <table class="preview-table" id="preview-table">
+              <thead>
+                <tr>
+                  <th>Tracking Number</th>
+                  <th>Manifested Description</th>
+                  <th>CE Item HSCode</th>
+                </tr>
+              </thead>
+              <tbody id="preview-table-body">
+                <!-- Rows will be injected by JS -->
+              </tbody>
+            </table>
+            
+            <div id="preview-pagination" style="text-align:center; padding: 1rem; color: var(--clr-muted); font-size: 0.9rem;">
+              Showing up to 20 rows.
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-actions">
+          <p class="preview-note" style="font-size:0.95rem; color:var(--clr-muted); margin:0;">
+            Blank CE Commodity Description rows automatically remove ho gaye.
+          </p>
+          <button class="btn btn-success btn-process-all" id="context-download-btn" type="button" style="width:100%; justify-content:center; padding:.9rem 2rem; font-size:1rem; border-radius:var(--radius-md);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span id="context-btn-label">Download</span>
+          </button>
+        </div>
+
+        <!-- No MID Alert Card -->
+        <div class="no-mid-card" id="no-mid-card" hidden>
+          <div class="no-mid-header">
+            <div class="no-mid-icon" aria-hidden="true">⚠️</div>
+            <div>
+              <h3 class="no-mid-title">Shipments Requiring Review</h3>
+              <p class="no-mid-sub">In neeche di gayi shipments mein MID code ya HS code nahi mila. Reason column dekh kar manually review karein.</p>
+            </div>
+            <span class="no-mid-badge" id="no-mid-badge">0</span>
+          </div>
+          <div class="table-responsive" style="margin-top:1.25rem;">
+            <table class="preview-table" id="no-mid-table">
+              <thead>
+                <tr>
+                  <th>Tracking Number</th>
+                  <th>Manifested Description</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody id="no-mid-table-body">
+              </tbody>
+            </table>
+          </div>
+          
+        </div>
+
+        <!-- MID Words Card -->
+        <div class="fixed-card" id="fixed-card" hidden>
+          <div class="fixed-header">
+            <div class="fixed-icon" aria-hidden="true">✏️</div>
+            <div>
+              <h3 class="fixed-title">MID Words Changed</h3>
+              <p class="fixed-sub">Yeh shipments web app ne automatically clean/format kiye — original aur cleaned values yahan dekhein.</p>
+            </div>
+            <span class="fixed-badge" id="fixed-badge">0</span>
+          </div>
+          <div class="table-responsive" style="margin-top:1.25rem;">
+            <table class="preview-table" id="fixed-table">
+              <thead>
+                <tr>
+                  <th>Tracking Number</th>
+                  <th>Original Manifested</th>
+                  <th>Cleaned Manifested</th>
+                </tr>
+              </thead>
+              <tbody id="fixed-table-body">
+              </tbody>
+            </table>
+          </div>
+          </div>
+
+        <!-- Spaces Found Card -->
+        <div class="no-mid-card" id="spaces-found-card" hidden>
+          <div class="no-mid-header">
+            <div class="no-mid-icon" aria-hidden="true">␣</div>
+            <div>
+              <h3 class="no-mid-title">Spaces Found</h3>
+              <p class="no-mid-sub">Rows containing irregular internal or trailing spaces. Spaces automatically theek ho jayenge processing ke waqt.</p>
+            </div>
+            <span class="no-mid-badge" id="spaces-found-badge">0</span>
+          </div>
+          <div class="table-responsive" style="margin-top:1.25rem;">
+            <table class="preview-table" id="spaces-found-table">
+              <thead>
+                <tr>
+                  <th>Tracking Number</th>
+                  <th>Manifested Description</th>
+                  <th>Spaces Detail</th>
+                </tr>
+              </thead>
+              <tbody id="spaces-found-table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p id="process-status" class="visually-hidden">Upload a file to enable processing.</p>
+      </div> <!-- End preview-card -->
+
+      <!-- Progress Bar -->
+      <div class="progress-wrap" id="progress-wrap" hidden aria-live="polite">
+        <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        <p class="progress-text" id="progress-text">Uploading…</p>
+      </div>
+
+      <!-- Status Message -->
+      <div id="status-message" class="status-message" aria-live="assertive" hidden></div>
+
+      <!-- Results Card -->
+      <div class="results-card" id="results-card" hidden>
+        <div class="results-header">
+          <div class="results-icon" aria-hidden="true">✅</div>
+          <div>
+            <h3 class="results-title">Processing Complete</h3>
+            <p class="results-sub" id="results-message"></p>
+          </div>
+        </div>
+        <div class="results-stats" id="results-stats" aria-label="Processing statistics"></div>
+        <a class="btn btn-success btn-download" id="download-btn" href="#"
+           aria-label="Download cleaned Excel file">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Cleaned Excel
+        </a>
+      </div>
+    </div> <!-- End container-wide -->
+  </section>
+
+  <!-- ── Format Reference ───────────────────────────────────────── -->
+  <section class="format-section" aria-labelledby="format-heading">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="format-heading" class="section-title">Format Reference</h2>
+        <p class="section-subtitle">See exactly how each input is transformed.</p>
+      </div>
+      <div class="format-grid">
+
+        <div class="format-card">
+          <div class="format-label">Input</div>
+          <div class="format-code input-code">PKUMANAESIA51310 / 6204120010 / MEN SUIT M/O 100</div>
+          <div class="format-arrow" aria-hidden="true">↓</div>
+          <div class="format-label">Output</div>
+          <div class="format-code output-code">PKUMANAESIA/6204120010/MEN SUIT M/O 100</div>
+          <div class="format-note">MID numbers stripped, spaces removed, slashes normalised</div>
+        </div>
+
+        <div class="format-card">
+          <div class="format-label">Input (missing HS Code)</div>
+          <div class="format-code input-code">PKUMANAESIA51310//MEN SUIT M/O 100</div>
+          <div class="format-arrow" aria-hidden="true">↓ (CE Item HSCode: 6204120010)</div>
+          <div class="format-label">Output</div>
+          <div class="format-code output-code">PKUMANAESIA/6204120010/MEN SUIT M/O 100</div>
+          <div class="format-note">HS Code recovered from CE Item HSCode column</div>
+        </div>
+
+        <div class="format-card">
+          <div class="format-label">Input</div>
+          <div class="format-code input-code">PKEXTVAG95KAR/ 8906.29.0000/ UNISEX BRASS METAL</div>
+          <div class="format-arrow" aria-hidden="true">↓</div>
+          <div class="format-label">Output</div>
+          <div class="format-code output-code">PKEXTVAGKAR/8906290000/UNISEX BRASS METAL</div>
+          <div class="format-note">Embedded digits stripped, HS code dots removed</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────────── -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <p class="footer-copy">© 2024 CustomsMID Automation Tool. Designed by Imran Ahmed</p>
+      <p class="footer-tech">
+        <span class="tech-badge">Python</span>
+        <span class="tech-badge">Flask</span>
+        <span class="tech-badge">Pandas</span>
+        <span class="tech-badge">OpenPyXL</span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- ── Loading Overlay ────────────────────────────────────────── -->
+  <div class="loading-overlay" id="loading-overlay" hidden aria-hidden="true">
+    <div class="loading-card">
+      <div class="spinner" aria-label="Processing…"></div>
+      <p class="loading-title">Processing File…</p>
+      <p class="loading-sub" id="loading-sub">Cleaning MID codes &amp; HS codes</p>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js?v=205"></script>
+</body>
+</html>
