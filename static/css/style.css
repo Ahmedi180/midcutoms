@@ -5,11 +5,11 @@
 /* ── Design Tokens ─────────────────────────────────────────────── */
 :root {
   /* Colours */
-  --clr-bg:        #09090f;
-  --clr-surface:   #0f0f1a;
-  --clr-surface-2: #15152a;
-  --clr-border:    rgba(99, 102, 241, 0.18);
-  --clr-border-2:  rgba(255,255,255,0.07);
+  --clr-bg:        #1a1a2e;
+  --clr-surface:   #22223a;
+  --clr-surface-2: #2a2a44;
+  --clr-border:    rgba(99, 102, 241, 0.25);
+  --clr-border-2:  rgba(255,255,255,0.10);
 
   --clr-primary:   #6366f1;
   --clr-primary-h: #4f52e0;
@@ -19,9 +19,9 @@
   --clr-rose:      #f43f5e;
   --clr-amber:     #f59e0b;
 
-  --clr-text:      #e2e8f0;
-  --clr-muted:     #94a3b8;
-  --clr-subtle:    #475569;
+  --clr-text:      #f1f5f9;
+  --clr-muted:     #cbd5e1;
+  --clr-subtle:    #94a3b8;
 
   /* Typography */
   --font-body: 'Inter', system-ui, sans-serif;
@@ -173,7 +173,7 @@ header, main, section, footer, .upload-section,
 .site-header {
   position: sticky; top: 0; z-index: 100;
   backdrop-filter: blur(20px);
-  background: rgba(9,9,15,0.8);
+  background: rgba(26,26,46,0.85);
   border-bottom: 1px solid var(--clr-border-2);
 }
 .header-inner {
@@ -807,7 +807,7 @@ header, main, section, footer, .upload-section,
 /* ── Loading Overlay ───────────────────────────────────────────── */
 .loading-overlay {
   position: fixed; inset: 0; z-index: 999;
-  background: rgba(9,9,15,0.85);
+  background: rgba(26,26,46,0.88);
   backdrop-filter: blur(8px);
   display: grid; place-items: center;
 }

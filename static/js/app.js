@@ -5,6 +5,12 @@
 
 'use strict';
 
+// Scroll to top on refresh — don't remember scroll position
+if (history.scrollRestoration) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
 // ── DOM References ────────────────────────────────────────────────────────────
 const dropZone      = document.getElementById('drop-zone');
 const fileInput     = document.getElementById('file-input');
@@ -461,6 +467,7 @@ async function contextDownload() {
         renderProcessedPreview(result.data);
         isProcessed = true;
         updateContextButton();
+        contextDownloadBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         setStatus(`✅ ${type === 'spaces' ? 'Spaces' : 'MID Words'} processed! Preview shows Original vs Cleaned.`, 'success');
       } else {
         setStatus('❌ Processing failed: ' + result.error, 'error');
@@ -613,7 +620,6 @@ async function fetchPreviewData(type) {
   if (!currentSessionId) return;
   try {
     isProcessed = false;
-    previewTableBody.innerHTML = '<tr><td colspan="3" style="text-align:center">Loading...</td></tr>';
     const res = await fetch(apiJoin(`/api/preview/${currentSessionId}?type=${type}`));
     const result = await res.json();
     if (result.success) {
